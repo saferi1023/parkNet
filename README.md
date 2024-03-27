@@ -75,17 +75,14 @@ In summary, the research underscores the necessity for a travel planning solutio
 ### Storyboards
 Our storyboards illustrate how National Park Explorer addresses users' needs through three levels of tasks:
 
-1. **Discovering a Park:**  
-   *Scenario:* Alex, a photography enthusiast, wants to find a national park with breathtaking views and fewer crowds.  
-   *Solution:* Alex uses National Park Explorer to filter parks based on his photography interest and avoids peak times by checking the crowd calendar feature.
+1. **Personal Recommendations:**  
+<img src="./stroryboard1.png" width="1200">
 
-2. **Planning the Trip:**  
-   *Scenario:* Jamie, an undergraduate studying environmental science, seeks to volunteer during her visit to a national park.  
-   *Solution:* Jamie uses the platform to find parks offering volunteer programs and educational tours, creating a trip itinerary that aligns with her environmental studies.
+2. **Accommodate Multiple Members' Preference:**  
+<img src="./storyboard2.png" width="1200">
 
-3. **During the Visit:**  
-   *Scenario:* Chris is in Yellowstone and wants to know the best spots for wildlife photography without straying into restricted areas.  
-   *Solution:* Using the National Park Explorer mobile site, Chris accesses real-time updates and GPS-guided trails ensuring a safe and rewarding photography session.
+3. **Quick Updates & Alternate Planning:**  
+<img src="./storyboard3.png" width="1200">
 
 These scenarios showcase the flexibility and depth of our platform, catering to diverse user interests from adventure and photography to conservation and education.
 
@@ -93,8 +90,12 @@ These scenarios showcase the flexibility and depth of our platform, catering to 
 
 Join us on this journey to explore, learn, and protect the wonders of America's national parks. Follow our progress on GitHub and be part of the National Park Explorer community!
 
-**Contact Us:**  
-For more information, feedback, or if you'd like to join our team, please reach out at contact@nationalparkexplorer.com.
+**Links to our Mid-Fi Prototype:**  
+Links for FIGMA
+
+File link: https://www.figma.com/file/oNaaxsFSEinmCI9s8PNs30/Home?type=design&node-id=0%3A1&mode=design&t=VOVILSfL12lzS4fZ-1
+ 
+Figma preview: https://www.figma.com/proto/oNaaxsFSEinmCI9s8PNs30/Home?type=design&node-id=1-2&t=VOVILSfL12lzS4fZ-0&scaling=min-zoom&page-id=0%3A1 
 
 Let's discover the great outdoors together!
 
