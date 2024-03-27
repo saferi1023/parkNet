@@ -1,7 +1,7 @@
 # parkNet
 ## National Park Explorer: Your Guide to the Great Outdoors
 
-![Catchy Image of National Park Explorer](https://example.com/catchy-image-url)
+![Catchy Image of National Park Explorer](./Home_bg.jpg)
 
 ## Welcome to the National Park Explorer Project!
 
