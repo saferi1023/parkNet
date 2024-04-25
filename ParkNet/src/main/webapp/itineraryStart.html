@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<head>
+  <title>ParkNet</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="overlay"></div>
+  <div class="navbar">
+    <img alt="bar" src="./resources/Hamburger_icon.svg.png" id="barimg">
+    <span class="parknettxt">ParkNet</span>
+    <span class="mytripstxt">My Trips</span>
+    <span class="myaccounttxt">My Account</span>
+  </div>
+  <div id="myProgress">
+    <div id="myBar"></div>
+</div>
+  <h1 style="font-size:50px;margin-left: 125px;margin-bottom: 20px;margin-top:20px;">Hi!</h1>
+  <h2 style="margin-left: 125px;">How would you like to create your itinerary?</h2>
+  <div class="itinerarycontainer">
+    <div class="itinerarystartform">
+      <h2 style="font-size:40px;margin: 15px 0px 20px 20px;">Let us decide for you</h2>
+      <h3 style="margin-left:20px;margin-top:0px">We will find what works best for you based off of what you give us.</h3>
+      <form id="myForm" onsubmit="submitForm(); return false;" method="post" style="margin-left:40px">
+        <label for="name" style="margin-right: 80px;">Name:</label>
+        <input type="text" name="name" required><br>
+        <label for="age" style="margin-right: 93px;">Age:</label>
+        <input type="number" name="age" required><br>
+        <label for="numberofpeople" style="margin-right: 34px;">No.of People:</label>
+        <input type="number" name="number_o_fpeople" required><br>
+        <label for="enthusiasmlevel" style="margin-right: 0px;">Enthusiasm Level:</label>
+       <input type="range" style="margin-bottom: 15px; margin-top: 10px;" min="1" max="5" value="1" class="slider1" id="mySlider1" name="enthusiasmlevel">
+       <span id="selectedValue1" class="slider-label1" style="font-size: 20px;">🥱</span><br>
+        <label for="travel_date" style="margin-right: 6px;">Travel Dates:</label>
+        <input type="date" name="start_date" required>
+        <span>to</span>
+        <input type="date" name="end_date" required><br>
+        <label for="starting_location" style="margin-right: 1px;">Starting Location:</label>
+        <input type="text" name="starting_location" required>
+        <label for="destination" style="margin-right: 43px;">Destination:</label>
+        <input type="text" name="destination" oninput="filterNationalParks(this.value)" class="custom-input" list="national_parks" required>
+        <datalist id="national_parks">
+    <option value="Acadia National Park">
+    <option value="American Samoa National Park">
+    <option value="Arches National Park">
+    <option value="Badlands National Park">
+    <option value="Big Bend National Park">
+    <option value="Biscayne National Park">
+    <option value="Black Canyon of the Gunnison National Park">
+    <option value="Bryce Canyon National Park">
+    <option value="Canyonlands National Park">
+    <option value="Capitol Reef National Park">
+    <option value="Carlsbad Caverns National Park">
+    <option value="Channel Islands National Park">
+    <option value="Congaree National Park">
+    <option value="Crater Lake National Park">
+    <option value="Cuyahoga Valley National Park">
+    <option value="Death Valley National Park">
+    <option value="Denali National Park and Preserve">
+    <option value="Dry Tortugas National Park">
+    <option value="Everglades National Park">
+    <option value="Gates of the Arctic National Park and Preserve">
+    <option value="Gateway Arch National Park">
+    <option value="Glacier National Park">
+    <option value="Glacier Bay National Park and Preserve">
+    <option value="Grand Canyon National Park">
+    <option value="Grand Teton National Park">
+    <option value="Great Basin National Park">
+    <option value="Great Sand Dunes National Park and Preserve">
+    <option value="Great Smoky Mountains National Park">
+    <option value="Guadalupe Mountains National Park">
+    <option value="Haleakalā National Park">
+    <option value="Hawai'i Volcanoes National Park">
+    <option value="Hot Springs National Park">
+    <option value="Indiana Dunes National Park">
+    <option value="Isle Royale National Park">
+    <option value="Joshua Tree National Park">
+    <option value="Katmai National Park and Preserve">
+    <option value="Kenai Fjords National Park">
+    <option value="Kings Canyon National Park">
+    <option value="Kobuk Valley National Park">
+    <option value="Lake Clark National Park and Preserve">
+    <option value="Lassen Volcanic National Park">
+    <option value="Mammoth Cave National Park">
+    <option value="Mesa Verde National Park">
+    <option value="Mount Rainier National Park">
+    <option value="North Cascades National Park">
+    <option value="Olympic National Park">
+    <option value="Petrified Forest National Park">
+    <option value="Pinnacles National Park">
+    <option value="Redwood National and State Parks">
+    <option value="Rocky Mountain National Park">
+    <option value="Saguaro National Park">
+    <option value="Sequoia National Park">
+    <option value="Shenandoah National Park">
+    <option value="Theodore Roosevelt National Park">
+    <option value="Virgin Islands National Park">
+    <option value="Voyageurs National Park">
+    <option value="White Sands National Park">
+    <option value="Wind Cave National Park">
+    <option value="Wrangell-St. Elias National Park and Preserve">
+    <option value="Yellowstone National Park">
+    <option value="Yosemite National Park">
+    <option value="Zion National Park">
+</datalist><br>
+        <input type="submit" value="Continue">
+      </form>
+    </div>
+    <span style="font-size:30px;font-weight:bold;margin:250px 0px 0px 150px">or ...</span>
+    <button type="button" class="customizefurtherebutton" id="customizefurtherbtnid">Customize Further</button>
+  </div>
+  <div id="customizefurthermodalid" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <span class="close">&times;</span>
+          <h2><u>Let's get to know more about you</u></h2>
+        </div>
+        <div class="modal-body">
+          <div class="modalitinerarystartform">
+           <form id="myModalForm" onsubmit="submitModalForm(); return false;" method="post" style="margin-left:40px">
+        <label for="name" style="margin-right: 80px;">Name:</label>
+        <input type="text" name="name" required><br>
+        <label for="age" style="margin-right: 93px;">Age:</label>
+        <input type="number" name="age" required><br>
+        <label for="numberofpeople" style="margin-right: 34px;">No.of People:</label>
+        <input type="number" name="number_o_fpeople" required><br>
+        <label for="enthusiasmlevel" style="margin-right: 0px;">Enthusiasm Level:</label>
+    <input type="range" min="1" max="5" value="1" class="slider2" id="mySlider2" style="margin-bottom:15px;"" name="enthusiasmlevel">
+       <span id="selectedValue2" class="slider-label2"style="font-size: 20px;">🥱</span>
+<br>
+        <label for="travel_date" style="margin-right: 6px;">Travel Dates:</label>
+        <input type="date" name="start_date" required>
+        <span>to</span>
+        <input type="date" name="end_date" required><br>
+        <label for="starting_location" style="margin-right: 6px;">Starting Location:</label>
+        <input type="text" name="starting_location" required>
+      </form>
+          </div>
+          <img src="./resources/imagemodal.jpg" alt="imagemodal" id="modalimg">
+          <div class="container">
+    <div id="dynamicForms" style="width: 720px;margin-bottom:10px;overflow: auto;">
+    </div>
+</div>
+<button id="addPersonBtn">Add Person</button>
+<button class='takemeawaybutton' onClick="getData()">Take me away!</button>
+        </div>
+      </div>
+    </div>
+</body>
+<script>
+  var modal = document.getElementById("customizefurthermodalid");
+  var btn = document.getElementById("customizefurtherbtnid");
+  var span = document.getElementsByClassName("close")[0];
+  btn.onclick = function() {
+    modal.style.display = "block";
+  }
+  span.onclick = function() {
+    modal.style.display = "none";
+  }
+
+  function redirectToItineraryStartPage() {
+    window.location.href = 'itineraryStart.html';
+  }
+  
+  function submitForm() {
+	  var progress = document.getElementById("myProgress");
+      var elem = document.getElementById("myBar");
+      var width = 1;
+      var intervalId = setInterval(frame, 50);
+
+      function frame() {
+          if (width >= 100) {
+              width = 1;
+          } else {
+              width++;
+              elem.style.width = width + "%";
+          }
+      }
+      progress.style.display="block";
+      overlay.style.display = "block"; 
+      var form = document.getElementById("myForm");
+      var formData = new FormData(form);
+      var destination = formData.get('destination');
+      var jsonObject = {};
+      formData.forEach(function(value, key){
+          jsonObject[key] = value;
+      });
+      var jsonData = JSON.stringify(jsonObject);
+      localStorage.setItem('itineraryInformation', JSON.stringify(jsonObject));
+
+      fetch('generateBasicItinerary.do', {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json'
+          },
+          body: jsonData
+      })
+      .then(response => {
+          clearInterval(intervalId); 
+          if (!response.ok) {
+              throw new Error('Network response was not ok');
+          }
+          return response.json();
+      })
+      .then(data => {
+    	  progress.style.display="none";
+    	  overlay.style.display = "none";
+    	  document.getElementById("myForm").reset();
+    	  document.getElementById("myModalForm").reset();
+          window.location.href = 'itinerary.html?destination=' + encodeURIComponent(destination);
+          localStorage.setItem('itinerary', JSON.stringify(data.itinerary));
+      })
+      .catch(error => {
+    	  progress.style.display="none";
+    	  overlay.style.display = "none";
+          clearInterval(intervalId); 
+          console.error('Error:', error);
+      });
+  }
+    
+    function filterNationalParks(input) {
+        var options = document.getElementById('national_parks').options;
+        for (var i = 0; i < options.length; i++) {
+            var park = options[i].value.toLowerCase();
+            if (park.indexOf(input.toLowerCase()) === -1) {
+                options[i].setAttribute('hidden', 'hidden');
+            } else {
+                options[i].removeAttribute('hidden');
+            }
+        }
+    }
+  
+  
+    let formIndex = 1;
+
+    function addPersonForm() {
+        const container = document.getElementById('dynamicForms');
+
+        const form = document.createElement('form');
+        form.classList.add('person-form');
+        form.id = `personForm${formIndex}`;
+
+        const sliderId = `mySlider3_${formIndex}`;
+        const selectedValueId = `selectedValue3_${formIndex}`;
+        const sliderClass = `slider3_${formIndex}`;
+        const sliderLabelClass = `slider-label3_${formIndex}`;
+
+        form.innerHTML = `
+            <label for="name" style="margin-right: 87px;">Name:</label>
+            <input type="text" name="name"  style="margin-bottom: 7px;" required><br>
+            <label for="age" style="margin-right: 99px;">Age:</label>
+            <input type="number" name="age" style="margin-bottom: 7px;" required><br>
+            <label for="enthusiasmlevel" style="margin-right: 9px;">Enthusiasm Level:</label>
+            <input type="range" min="1" max="5" value="1" class="${sliderClass}" id="${sliderId}" name="enthusiasmlevel" style="margin-bottom:15px;">
+            <span id="${selectedValueId}" class="${sliderLabelClass}" style="font-size: 20px;">🥱</span>
+            <br>
+            <label for="accessibility_needs" style="margin-right: 0px;">Accessibility Needs:</label>
+            <input type="text" name="accessibility_needs" style="margin-bottom: 7px;" required><br>
+            <label for="interests" style="margin-right: 15px;">Interests:</label><br>
+            <input type="checkbox" name="interests" value="hiking"> Hiking<br>
+            <input type="checkbox" name="interests" value="camping"> Camping<br>
+            <input type="checkbox" name="interests" value="wildlife_watching"> Wildlife Watching<br>
+            <input type="checkbox" name="interests" value="photography"> Photography<br>
+            <input type="checkbox" name="interests" value="bird_watching"> Bird Watching<br>
+            <input type="checkbox" name="interests" value="scenic_drives"> Scenic Drives<br>
+            <button type="button" onclick="removePersonForm(${formIndex})" style="margin-top:10px">Remove Person</button>
+        `;
+
+        container.appendChild(form);
+
+        const slider = document.getElementById(sliderId);
+        const selectedValue = document.getElementById(selectedValueId);
+
+        slider.oninput = function() {
+            const value = parseInt(this.value);
+            let emoji = '';
+            switch(value) {
+                case 1:
+                    emoji = '🥱'; // Lowest excitement
+                    break;
+                case 2:
+                    emoji = '😐'; // Low excitement
+                    break;
+                case 3:
+                    emoji = '😃'; // Moderate excitement
+                    break;
+                case 4:
+                    emoji = '😄'; // High excitement
+                    break;
+                case 5:
+                    emoji = '🤩'; // Highest excitement
+                    break;
+                default:
+                    emoji = '🥱';
+            }
+            selectedValue.innerText = emoji;
+        };
+
+        formIndex++;
+    }
+
+
+  function removePersonForm(index) {
+      const formToRemove = document.getElementById(`personForm${index}`);
+      formToRemove.remove();
+  }
+
+  document.getElementById('addPersonBtn').addEventListener('click', addPersonForm);
+  
+  function getData() {
+	  var progress = document.getElementById("myProgress");
+      var elem = document.getElementById("myBar");
+      var width = 1;
+      var intervalId = setInterval(frame, 50);
+
+      function frame() {
+          if (width >= 100) {
+              width = 1;
+          } else {
+              width++;
+              elem.style.width = width + "%";
+          }
+      }
+      progress.style.display="block";
+      overlay.style.display = "block"; 
+	    const myModalFormData = new FormData(document.getElementById('myModalForm'));
+	    const dynamicFormsData = {};
+	    const personForms = document.querySelectorAll('.person-form');
+	    personForms.forEach((form, index) => {
+	        const formData = new FormData(form);
+	        const personData = Object.fromEntries(formData);
+	        dynamicFormsData[`person${index + 1}`] = personData;
+	    });
+	   
+	    
+	    const myModalJSON = Object.fromEntries(myModalFormData);
+	    const requestData = {
+	        ...myModalJSON,
+	        ...dynamicFormsData
+	    };
+	    localStorage.setItem('itineraryInformation', JSON.stringify(requestData));
+	    fetch('generateComplexItinerary.do', {
+	        method: 'POST',
+	        headers: {
+	            'Content-Type': 'application/json',
+	        },
+	        body: JSON.stringify(requestData),
+	    })
+	    .then(response => {
+	        if (response.ok) {
+	            return response.json();
+	        }
+	        throw new Error('Network response was not ok.');
+	    })
+	    .then(data => {
+	    	document.querySelectorAll('.person-form').forEach(e => e.parentNode.removeChild(e))
+	 	    document.getElementById("myForm").reset();
+	 	  document.getElementById("myModalForm").reset();
+	    	progress.style.display="none";
+	    	  overlay.style.display = "none";
+	    	window.location.href = 'adventureSelection.html?itinerary=' + encodeURIComponent(data.itinerary);
+	    })
+	    .catch(error => {
+	    	progress.style.display="none";
+	    	  overlay.style.display = "none";
+	        console.error('Error:', error);
+	    });
+	}
+
+  var slider1 = document.getElementById("mySlider1");
+  var selectedValue = document.getElementById("selectedValue1");
+  
+  slider1.oninput = function() {
+      var value = parseInt(this.value);
+      var emoji = '';
+      switch(value) {
+          case 1:
+              emoji = '🥱'; // Lowest excitement
+              break;
+          case 2:
+              emoji = '😐'; // Low excitement
+              break;
+          case 3:
+              emoji = '😃'; // Moderate excitement
+              break;
+          case 4:
+              emoji = '😄'; // High excitement
+              break;
+          case 5:
+              emoji = '🤩'; // Highest excitement
+              break;
+          default:
+              emoji = '🥱';
+      }
+      selectedValue1.innerText = emoji;
+  }
+  
+  var slider2 = document.getElementById("mySlider2");
+  var selectedValue2 = document.getElementById("selectedValue2");
+  
+  slider2.oninput = function() {
+      var value = parseInt(this.value);
+      var emoji = '';
+      switch(value) {
+          case 1:
+              emoji = '🥱'; // Lowest excitement
+              break;
+          case 2:
+              emoji = '😐'; // Low excitement
+              break;
+          case 3:
+              emoji = '😃'; // Moderate excitement
+              break;
+          case 4:
+              emoji = '😄'; // High excitement
+              break;
+          case 5:
+              emoji = '🤩'; // Highest excitement
+              break;
+          default:
+              emoji = '🥱';
+      }
+      selectedValue2.innerText = emoji;
+  }
+
+</script>
+</html>

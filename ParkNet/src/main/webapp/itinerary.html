@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <meta charset="UTF-8">
+    <title>ParkNet</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://maps.googleapis.com/maps/api/js?key=&callback=initMap" async defer></script>
+     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<style>
+ #map {
+    height: 250px;
+    width: 350px;
+    position: absolute !important;
+    top: 170px;
+    border: 1px solid black;
+    border-radius: 10px;
+    left: 1020px;
+        }
+ .quickUpdates{
+ background: linear-gradient(to right, #6B91F4, #1A3479);
+    height: 250px;
+    width: 350px;
+    position: absolute !important;
+    top: 470px;
+    border: 1px solid black;
+    border-radius: 10px;
+    background-color:#F5F5F5;
+    left: 1020px;
+    color:#ffffff;
+    font-size:35px;
+ }
+ #weatherIcon {
+            font-size: 60px;
+        }
+        
+</style>
+<body>
+<div id="overlay"></div>
+    <div class="navbar">
+        <img alt="bar" src="./resources/Hamburger_icon.svg.png" id="barimg">
+        <span class="parknettxt">ParkNet</span>
+        <span class="mytripstxt">My Trips</span>
+        <span class="myaccounttxt">My Account</span>
+    </div>
+      <div id="myProgress">
+    <div id="myBar"></div>
+    </div>
+    <div id="destination"></div>
+    <div class="itineraryMain">
+        <div id="itinerary" contenteditable="false"></div> <!-- Adding contenteditable attribute --> <!-- Added customize button -->
+        <button type="button" id="saveButton" onclick="saveChanges()">Save</button> <!-- Save button -->
+        <button type="button" id='pagebutton1' onclick="previousday()">Previous Day</button>
+       <button type="button" id='pagebutton2' onclick="nextday()">Next Day</button>
+    </div>
+    <button type="button" id='shareButton' class="buttonsclass" onclick="shareItinerary()">Share</button>
+    <button type="button" id='customizeButton' class="buttonsclass" onclick="toggleEdit()">Customize</button>
+    <button type="button" id='quickButton' class="buttonsclass" onclick="quickUpdates()">Quick Updates</button>
+     <!-- <button type="button" id='saveTrip' onclick="saveTrip()">Save this trip</button> -->
+    <div id="map"></div>
+    <div class="quickUpdates">
+    <div id="forecastResult" style="margin: 70px 0px 0px 120px;"></div>
+    <div id="weatherIcon" style="margin-left: 140px;"></div>
+     </div>
+      <div class="modal" id="customizefurthermodal2id">
+      <div class="modal-content">
+        <div class="modal-header">
+        <span class="close">&times;</span>
+        <h2><u>Quick Updates</u></h2>
+        </div>
+        <div class="modal-body">
+          <div id="modalitinerarystartform2">
+          </div>
+          </div>
+          </div>
+          </div>
+   
+    <script>
+
+    var modal = document.getElementById("customizefurthermodal2id");
+    var btn = document.getElementById("quickButton");
+    var span = document.getElementsByClassName("close")[0];
+    btn.onclick = function() {
+    	var progress = document.getElementById("myProgress");
+        var elem = document.getElementById("myBar");
+        var width = 1;
+        var intervalId = setInterval(frame, 50);
+
+        function frame() {
+            if (width >= 100) {
+                width = 1;
+            } else {
+                width++;
+                elem.style.width = width + "%";
+            }
+        }
+        progress.style.display="block";
+        overlay.style.display = "block"; 
+    	fetch('quickUpdates.do', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: {}
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            document.getElementById('modalitinerarystartform2').innerHTML = data.itinerary;
+            progress.style.display="none";
+            overlay.style.display = "none"; 
+            modal.style.display = "block";
+        })
+        .catch(error => {
+        	progress.style.display="none";
+            overlay.style.display = "none"; 
+            console.error('Error:', error);
+            
+        });
+    }
+    span.onclick = function() {
+      modal.style.display = "none";
+    }
+    var pagecount =0;
+        const params = new URLSearchParams(window.location.search);
+        const itinerary = JSON.parse(localStorage.getItem('itinerary'));
+        var itineraryArray = [];
+        var updatedItineraryArray = []; 
+        var originalItineraryArray = [];
+        var destination = params.get('destination');
+        destination = destination.replace(/national park/gi, '').trim();
+        document.getElementById('destination').innerText = "The Majestic " + destination + " Awaits!";
+        var days = itinerary.split("#### Day");
+        days.shift(); 
+        days.forEach((day, index) => {
+            var [date, ...sections] = day.trim().split('***').map(item => item.trim());
+            var itineraryHTML = '<h2>Day ' + date.trim().replace(/\?/, ' ') + '</h2><ul>';
+
+            sections.forEach(section => {
+                var [timeRange, activities] = section.split('\n-').map(item => item.trim());
+                if (timeRange) {
+                    itineraryHTML += '<li style="margin: 10px 0;"><strong>' + timeRange + ':</strong> ' + activities + '</li>';
+                } else {
+                    itineraryHTML += '<li style="margin: 10px 0;">' + activities + '</li>';
+                }
+            });
+
+            itineraryHTML += '</ul>';
+            itineraryArray.push(itineraryHTML);
+        });
+document.getElementById('itinerary').innerHTML = itineraryArray[0];
+        updatedItineraryArray = itineraryArray.slice();
+        originalItineraryArray = itineraryArray.slice();
+        
+        function previousday() {
+        	var previousday = document.getElementById('pagebutton1');
+        	var nextday = document.getElementById('pagebutton2');
+        	pagecount = pagecount-1;
+        	if(pagecount==0){
+        		previousday.style.display = 'none';
+        	} else {
+        		previousday.style.display = 'block';
+        		nextday.style.display = 'block';
+        	}
+            document.getElementById('itinerary').innerHTML = itineraryArray[pagecount];
+            getWeather(itineraryArray[pagecount]);
+          }
+        function nextday() {
+        	var previousday = document.getElementById('pagebutton1');
+        	var nextday = document.getElementById('pagebutton2');
+        	pagecount = pagecount+1;
+        	if(pagecount==itineraryArray.length-1){
+        		nextday.style.display = 'none';
+        		previousday.style.display = 'block';
+        	} else{
+        		nextday.style.display = 'block';
+        		previousday.style.display = 'block';
+        	}
+            document.getElementById('itinerary').innerHTML = itineraryArray[pagecount];
+            getWeather(itineraryArray[pagecount]);
+          }
+
+        // Initialize and add the map
+        function initMap() {
+            var map = new google.maps.Map(document.getElementById('map'), {
+                zoom: 10,
+                center: { lat: 0, lng: 0 } // Default center (will be updated after geocoding)
+            });
+
+            var geocoder = new google.maps.Geocoder();
+
+            geocoder.geocode({ 'address': params.get('destination') }, function (results, status) {
+                if (status === 'OK') {
+                    map.setCenter(results[0].geometry.location);
+                    var marker = new google.maps.Marker({
+                        map: map,
+                        position: results[0].geometry.location,
+                        title: results[0].formatted_address
+                    });
+                } else {
+                   // alert('Geocode was not successful for the following reason: ' + status);
+                }
+            });
+        }
+        
+        function shareItinerary() {
+            var currentPageUrl = window.location.href;
+            navigator.clipboard.writeText(currentPageUrl)
+                .then(() => {
+                    alert('Page URL copied to clipboard: ' + currentPageUrl);
+                })
+                .catch(err => {
+                    console.error('Unable to copy URL to clipboard: ', err);
+                    alert('Failed to copy page URL to clipboard. You can manually copy it from the address bar: ' + currentPageUrl);
+                });
+        }
+        
+        getWeather(itineraryArray[0]);
+        
+        function getWeather(date2) {
+        	 var pattern = /([A-Z][a-z]+ \d{1,2}, \d{4})/;
+
+             var matches = date2.match(pattern);
+             var date="";
+             var formattedDate ="";
+        	  if (matches && matches.length > 1) {
+            var extractedDate = new Date(matches[1]); // Parse the extracted date string
+            formattedDate = formatDate(extractedDate);
+        } else {
+            console.log('Date not found in the content.');
+        }
+
+
+            var right = params.get('destination');
+            var apiUrl = `https://api.weatherapi.com/v1/forecast.json?key=${apiKey}&q=${right}&dt=${formattedDate}`;
+
+            $.ajax({
+                url: apiUrl,
+                type: 'GET',
+                success: function(response) {
+                    var forecast = response.forecast.forecastday[0];
+                    var temperature = forecast.day.avgtemp_c;
+                    var weatherIconCode = getWeatherIcon(temperature);
+                    var forecastText = `${temperature}°C`;
+                    document.getElementById('forecastResult').innerHTML = forecastText;
+                    document.getElementById('weatherIcon').innerHTML = weatherIconCode;
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error fetching data:', error);
+                    $('#forecastResult').text('Error fetching forecast data.');
+                }
+            });
+        };
+        
+        function formatDate(date) {
+            var month = (date.getMonth() + 1).toString().padStart(2, '0'); // Add leading zero if needed
+            var day = date.getDate().toString().padStart(2, '0'); // Add leading zero if needed
+            var year = date.getFullYear();
+            return month + '/' + day + '/' + year;
+        }
+
+        function getWeatherIcon(temperature) {
+            if (temperature < 0) {
+                return '❄️'; // Cold
+            } else if (temperature < 10) {
+                return '🌨️'; // Cool
+            } else if (temperature < 20) {
+                return '🌥️'; // Mild
+            } else if (temperature < 30) {
+                return '⛅'; // Warm
+            } else {
+                return '☀️'; // Hot
+            }
+        }
+        
+     // Function to toggle edit mode
+        function toggleEdit() {
+            var itineraryDiv = document.getElementById('itinerary');
+            itineraryDiv.contentEditable = itineraryDiv.contentEditable === 'true' ? 'false' : 'true';
+            var save = document.getElementById('saveButton');
+        	save.style.display = 'block';
+        }
+
+        // Function to save changes
+        function saveChanges() {
+            var itineraryDiv = document.getElementById('itinerary');
+            updatedItineraryArray[pagecount] = itineraryDiv.innerHTML; // Save edited content to updatedItineraryArray
+            itineraryArray = updatedItineraryArray.slice();
+            toggleEdit(); 
+            var save = document.getElementById('saveButton');
+        	save.style.display = 'none';
+        }
+
+
+        function saveTrip() {// Get the existing saved trips from localStorage
+        	let savedTrips = JSON.parse(localStorage.getItem('savedTrips'));
+
+        	// If savedTrips doesn't exist or is not an object, initialize it as an empty object
+        	if (!savedTrips || typeof savedTrips !== 'object') {
+        	    savedTrips = {
+        	        pastTrips: [],
+        	        currentTrips: [],
+        	        futureTrips: []
+        	    };
+        	}
+
+        	// Get the itinerary information from localStorage
+        	const itineraryInformation = JSON.parse(localStorage.getItem('itineraryInformation'));
+
+        	// Check if itineraryInformation exists
+        	if (itineraryInformation) {// Get the existing saved trips from localStorage
+        		let savedTrips = JSON.parse(localStorage.getItem('savedTrips'));
+
+        		// If savedTrips doesn't exist or is not an object, initialize it as an empty object
+        		if (!savedTrips || typeof savedTrips !== 'object') {
+        		    savedTrips = {
+        		        pastTrips: [],
+        		        currentTrips: [],
+        		        futureTrips: []
+        		    };
+        		}
+
+        		// Get the itinerary information from localStorage
+        		const itineraryInformation = JSON.parse(localStorage.getItem('itineraryInformation'));
+
+        		// Check if itineraryInformation exists
+        		if (itineraryInformation && itineraryInformation.start_date && itineraryInformation.end_date) {
+        		    const currentDate = new Date();
+
+        		    // Parse the travel dates
+        		    const travelDate1 = new Date(itineraryInformation.travelDate1);
+        		    const travelDate2 = new Date(itineraryInformation.travelDate2);
+
+        		    // Check if the trip is in the past, current, or future
+        		    if (travelDate2 < currentDate) {
+        		        savedTrips.pastTrips.push(JSON.stringify(itineraryArray));
+        		    } else if (travelDate1 <= currentDate && travelDate2 >= currentDate) {
+        		        savedTrips.currentTrips.push(JSON.stringify(itineraryArray));
+        		    } else {
+        		        savedTrips.futureTrips.push(JSON.stringify(itineraryArray));
+        		    }
+
+        		    // Save the categorized trips in localStorage.savedTrips
+        		    localStorage.setItem('savedTrips', JSON.stringify(savedTrips));
+        		} else {
+        		    console.log('Itinerary information not found or incomplete in localStorage.');
+        		}}
+        }
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>ParkNet</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* Additional CSS styling */
+    .park1 {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+      background-color: #3A882D;
+      width: 900px;
+      height: 130px;
+      border-radius: 15px;
+      color: #ffffff;
+      font-size: 20px;
+      padding: 10px;
+    }
+    .park1 input[type="checkbox"] {
+      margin-right: 10px; /* Adjust spacing between checkbox and park name */
+      width: 20px; /* Set the width */
+      height: 20px;
+    }
+    .park1 img {
+      width: 175px; /* Adjust image size as needed */
+      height: 115px;
+      margin-right: 10px; /* Adjust spacing between image and park name */
+    }
+    .park-info {
+      flex-grow: 1; /* Allow the park info container to grow and fill available space */
+    }
+    .park-name {
+      margin-left: 100px;
+    }
+    .highlights-container {
+      margin-left: 20px;
+    }
+    .highlights {
+      width: 200px; /* Fixed width for the highlights div */
+      border-radius: 5px;
+      background: #51B640;
+      padding: 5px 10px; /* Adjusted padding to reduce height by 10px */
+    }
+    .highlights h3 {
+      margin-bottom: 5px;
+      font-size: 18px;
+    }
+    .highlights span {
+      display: block;
+      margin-top: 5px;
+    }
+  </style>
+</head>
+<body>
+<div id="overlay"></div>
+  <div class="navbar">
+    <img alt="bar" src="./resources/Hamburger_icon.svg.png" id="barimg">
+    <span class="parknettxt">ParkNet</span>
+    <span class="mytripstxt">My Trips</span>
+    <span class="myaccounttxt">My Account</span>
+  </div>
+  <div id="myProgress">
+    <div id="myBar"></div>
+    </div>
+  <h2 style="font-size: 30px; margin-left: 125px; margin-bottom: 20px; margin-top: 40px;"><u>Where Would You Like to Explore?</u></h2>
+  <div id="choices" style="margin-left: 125px; margin-top: 40px;"></div>
+  <button id="viewMyAdventureBtn">View my Adventure</button>
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const itinerary = params.get('itinerary');
+    var parksArray = itinerary.split(',');
+    var parkImages = [
+      "./resources/park1.jpg",
+      "./resources/park2.jpg", // Add more image URLs for each park
+      "./resources/park3.jpg"
+    ];
+    
+    // Define highlights for each park
+    var parkHighlights = [
+      ["Great hiking trails", "Beautiful scenery", "Abundant wildlife"],
+      ["Scenic viewpoints", "Picnic areas", "Nature walks"],
+      ["Wildlife safari", "Camping sites", "Bird watching"]
+    ];
+    
+    var checkboxesDiv = document.getElementById('choices');
+    parksArray.forEach((park, index) => {
+        var div = document.createElement('div'); // Create a div container for checkbox, image, and park name
+        div.classList.add('park1'); // Add a class for styling
+        var checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.name = 'park';
+        checkbox.value = park;
+        div.appendChild(checkbox);
+        var img = document.createElement('img');
+        img.src = parkImages[index]; // Set the image source
+        img.alt = "Park Image"; // Set the alt text for accessibility
+        div.appendChild(img);
+        
+        var parkInfoContainer = document.createElement('div');
+        parkInfoContainer.classList.add('park-info'); // Add a class for styling
+        var parkName = document.createElement('span');
+        parkName.classList.add('park-name'); // Add a class for styling
+        parkName.textContent = park; // Set the park name
+        parkInfoContainer.appendChild(parkName);
+        
+        div.appendChild(parkInfoContainer);
+        
+        // Create and append the highlights div
+        var highlightsContainer = document.createElement('div');
+        highlightsContainer.classList.add('highlights-container'); // Add a class for styling
+        var highlightsDiv = document.createElement('div');
+        highlightsDiv.classList.add('highlights');
+        var highlightsTitle = document.createElement('h3');
+        highlightsTitle.textContent = 'Highlights';
+        highlightsDiv.appendChild(highlightsTitle);
+        // Adding highlights from the array
+        parkHighlights[index].forEach(highlightText => {
+            var highlight = document.createElement('span');
+            highlight.textContent = highlightText;
+            highlightsDiv.appendChild(highlight);
+        });
+        
+        highlightsContainer.appendChild(highlightsDiv);
+        
+        div.appendChild(highlightsContainer);
+        
+        checkboxesDiv.appendChild(div);
+    });
+
+    checkboxesDiv.addEventListener('change', function(event) {
+        var checkboxes = document.querySelectorAll('input[name=park]');
+        checkboxes.forEach(checkbox => {
+            if (checkbox !== event.target) {
+                checkbox.checked = false;
+            }
+        });
+    });
+    
+    document.getElementById('viewMyAdventureBtn').addEventListener('click', function() {
+    	var progress = document.getElementById("myProgress");
+        var elem = document.getElementById("myBar");
+        var width = 1;
+        var intervalId = setInterval(frame, 50);
+
+        function frame() {
+            if (width >= 100) {
+                width = 1;
+            } else {
+                width++;
+                elem.style.width = width + "%";
+            }
+        }
+        progress.style.display="block";
+        overlay.style.display = "block"; 
+        var selectedPark = document.querySelector('input[name=park]:checked');
+        if (selectedPark) {
+        	fetch('choicesSelection.do', {
+    	        method: 'POST',
+    	        headers: {
+    	            'Content-Type': 'application/json'
+    	        },
+    	        body: selectedPark.value
+    	    })
+    	    .then(response => {
+    	        if (!response.ok) {
+    	            throw new Error('Network response was not ok');
+    	        }
+    	        return response.json();
+    	    })
+    	    .then(data => {
+    	    	progress.style.display="none";
+    	    	  overlay.style.display = "none";
+    	    	window.location.href = 'itinerary.html?destination=' + encodeURIComponent(selectedPark.value);
+    	    	 localStorage.setItem('itinerary', JSON.stringify(data.itinerary));
+    	    })
+    	    .catch(error => {
+    	    	progress.style.display="none";
+    	    	  overlay.style.display = "none";
+    	        console.error('Error:', error);
+    	    });
+        } else {
+            console.log('No park selected.');
+        }
+    });
+  </script>
+</body>
+</html>

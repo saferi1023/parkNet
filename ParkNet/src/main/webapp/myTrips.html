@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ParkNet</title>
+<link rel="stylesheet" href="style.css">
+<style>
+  /* Additional CSS for centering text */
+  #mytrips {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* Full height of the viewport */
+  }
+</style>
+</head>
+<body>
+<div id="overlay"></div>
+<div class="navbar">
+  <img alt="bar" src="./resources/Hamburger_icon.svg.png" id="barimg">
+  <span class="parknettxt">ParkNet</span>
+  <span class="myaccounttxt2">My Account</span>
+</div>
+<div id="mytrips"></div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    var myTripsDiv = document.getElementById("mytrips");
+    var itineraryArray = JSON.parse(localStorage.getItem("itineraryArray"));
+
+    if (!itineraryArray || itineraryArray.length === 0) {
+      myTripsDiv.textContent = "There are no saved trips.";
+    } else {
+      // Render your saved trips here
+      myTripsDiv.textContent = itineraryArray;
+    }
+  });
+</script>
+</body>
+</html>

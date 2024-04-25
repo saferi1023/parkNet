@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>ParkNet</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class = 'navbar'>
+<img alt="bar" src="./resources/Hamburger_icon.svg.png" id='barimg'>
+<span class='parknettxt'>ParkNet</span>
+<span class='mytripstxt'>My Trips</span>
+<span class='myaccounttxt'>My Account</span>
+</div>
+<div class="cropped-image"></div>
+<div class='itinerarytxt'>
+<span>Plan your </span><span style="color: #008080;">itinerary</span><span> in minutes.</span>
+</div>
+<button type="button" class='startadventurebutton' onclick="redirectToItineraryStartPage()">Start Adventure</button>
+<div>
+<div style="text-align: center; margin-top: 30px;">
+  <span style="display: inline-block;color:#2F5429;font-size:20px">Top Articles</span>
+  <div class="bottomHome">
+  <img alt="bar" src="./resources/nationalparksranked.jpg" id='nationaparks15' onclick="window.open('https://morethanjustparks.com/national-parks-ranked/', '_blank');">
+  <img alt="bar" src="./resources/hqdefault.jpg" id='hike' onclick="window.open('https://stories.strava.com/articles/10-of-the-most-famous-hikes-in-us-national-parks', '_blank');">
+  <img alt="bar" src="./resources/mvn.jpg" id='mvn' onclick="window.open('https://morethanjustparks.com/most-visited-national-parks/', '_blank');">
+   <img alt="bar" src="./resources/seven.png" id='seven' onclick="window.open('https://thewanderclub.com/blogs/blog/national-parks-with-waterfalls', '_blank');">
+  </div>
+</div>
+</div>
+</body>
+<script>
+function redirectToItineraryStartPage() {
+    window.location.href = 'itineraryStart.html';
+  }
+</script>
+</html>
