@@ -5,13 +5,6 @@
 
 ## Welcome to the National Park Explorer Project!
 
-### Our Team
-National Park Explorer is brought to you by a dedicated team of developers, designers, researchers, and nature enthusiasts committed to enhancing your travel experience. Our diverse skills and shared passion for the great outdoors fuel this project, aiming to connect more people with the natural beauty of national parks across the United States.
-
-- **Ramu Nagalla** - Project Manager
-- **Gage DeBruhl** - Lead Developer
-- **Mohammed Saferi Rahman** - Researcher
-
 ## About Our Project
 National Park Explorer is a web-based platform designed to help outdoor enthusiasts and casual travelers alike discover and plan trips to national parks in the United States. Leveraging user-centric design and comprehensive research, our tool personalizes travel suggestions, itineraries, and prepares you for an unforgettable adventure.
 
